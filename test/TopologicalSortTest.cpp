@@ -1,17 +1,16 @@
 #include <memory>
-#include "CXXGraph.hpp"
-#include "Utility/ConstString.hpp"
-#include "Utility/Typedef.hpp"
+
+#include "CXXGraph/CXXGraph.hpp"
 #include "gtest/gtest.h"
 
 // Smart pointers alias
 template <typename T>
 using unique = std::unique_ptr<T>;
 template <typename T>
-using shared= std::shared_ptr<T>;
+using shared = std::shared_ptr<T>;
 
-using std::make_unique;
 using std::make_shared;
+using std::make_unique;
 
 // topological sort test in a cyclic graph
 TEST(TopologicalSortTest, test_1) {
@@ -96,8 +95,8 @@ TEST(TopologicalSortTest, test_3) {
   ASSERT_EQ(res.nodesInTopoOrder.size(), 8);
 
   // check topological order of nodes
-  std::unordered_map<unsigned long, int> nodeToOrder;
-  for (int i = 0; i < res.nodesInTopoOrder.size(); ++i) {
+  std::unordered_map<CXXGraph::id_t, int> nodeToOrder;
+  for (size_t i = 0; i < res.nodesInTopoOrder.size(); ++i) {
     nodeToOrder[res.nodesInTopoOrder[i].getId()] = i;
   }
 

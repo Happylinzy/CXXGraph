@@ -1,37 +1,29 @@
 #include <memory>
-#include "CXXGraph.hpp"
-#include "Edge/DirectedEdge.hpp"
-#include "Edge/UndirectedEdge.hpp"
-#include "Graph/Graph.hpp"
+
+#include "CXXGraph/CXXGraph.hpp"
 #include "gtest/gtest.h"
 
 // Smart pointers alias
 template <typename T>
 using unique = std::unique_ptr<T>;
 template <typename T>
-using shared= std::shared_ptr<T>;
+using shared = std::shared_ptr<T>;
 
-using std::make_unique;
 using std::make_shared;
+using std::make_unique;
 
 // helper function to compare strongly connected components (SCC) as computed
 // by the algorithm with expected (correct) SCC
-void compareComponents(CXXGraph::Components<int>& comp1,
+void compareComponents(CXXGraph::SCCResult<int> result,
                        CXXGraph::Components<int>& comp2) {
-  ASSERT_EQ(comp1.size(), comp2.size());
+  ASSERT_EQ(result.noOfComponents, comp2.size());
 
-  for (size_t i = 0; i < comp1.size(); ++i) {
-    std::sort(comp1[i].begin(), comp1[i].end());
-    std::sort(comp2[i].begin(), comp2[i].end());
+  for (size_t i = 0; i < comp2.size(); i++) {
+    int curComp = result.sccMap[comp2[i][0].getId()];
+    for (size_t j = 1; j < comp2[i].size(); j++) {
+      ASSERT_EQ(result.sccMap[comp2[i][j].getId()], curComp);
+    }
   }
-
-  std::sort(comp1.begin(), comp1.end(),
-            [](auto& c1, auto& c2) { return c1.front() < c2.front(); });
-
-  std::sort(comp2.begin(), comp2.end(),
-            [](auto& c1, auto& c2) { return c1.front() < c2.front(); });
-
-  ASSERT_EQ(comp1, comp2);
 }
 
 // undirected graph
@@ -42,8 +34,8 @@ TEST(KosarajuTest, test_1) {
   CXXGraph::T_EdgeSet<int> edgeSet;
   edgeSet.insert(make_shared<CXXGraph::UndirectedEdge<int>>(edge));
   CXXGraph::Graph<int> graph(edgeSet);
-  auto res = graph.kosaraju();
-  ASSERT_EQ(res.stronglyConnectedComps.size(), 0);
+  CXXGraph::SCCResult<int> res = graph.kosaraju();
+  ASSERT_EQ(res.noOfComponents, 0);
   ASSERT_FALSE(res.success);
   ASSERT_EQ(res.errorMessage, CXXGraph::ERR_UNDIR_GRAPH);
 }
@@ -58,11 +50,11 @@ TEST(KosarajuTest, test_2) {
   edgeSet.insert(make_shared<CXXGraph::DirectedEdge<int>>(edge1));
   edgeSet.insert(make_shared<CXXGraph::DirectedEdge<int>>(edge2));
   CXXGraph::Graph<int> graph(edgeSet);
-  auto res = graph.kosaraju();
+  CXXGraph::SCCResult<int> res = graph.kosaraju();
   ASSERT_TRUE(res.success);
   ASSERT_EQ(res.errorMessage, "");
-  ASSERT_EQ(res.stronglyConnectedComps.size(), 1);
-  ASSERT_EQ(res.stronglyConnectedComps[0].size(), 2);
+  ASSERT_EQ(res.noOfComponents, 1);
+  // ASSERT_EQ(res.stronglyConnectedComps[0].size(), 2);
 }
 
 // 1 comp, 2 strongly connected comp
@@ -78,12 +70,12 @@ TEST(KosarajuTest, test_3) {
   edgeSet.insert(make_shared<CXXGraph::DirectedEdge<int>>(edge2));
   edgeSet.insert(make_shared<CXXGraph::DirectedEdge<int>>(edge3));
   CXXGraph::Graph<int> graph(edgeSet);
-  auto res = graph.kosaraju();
+  CXXGraph::SCCResult<int> res = graph.kosaraju();
   ASSERT_TRUE(res.success);
   ASSERT_EQ(res.errorMessage, "");
 
   CXXGraph::Components<int> expectedComponents = {{node1, node2}, {node3}};
-  compareComponents(res.stronglyConnectedComps, expectedComponents);
+  compareComponents(res, expectedComponents);
 }
 
 // 2 components, 2 strongly connected comps
@@ -102,12 +94,12 @@ TEST(KosarajuTest, test_4) {
   edgeSet.insert(make_shared<CXXGraph::DirectedEdge<int>>(edge3));
   edgeSet.insert(make_shared<CXXGraph::DirectedEdge<int>>(edge4));
   CXXGraph::Graph<int> graph(edgeSet);
-  auto res = graph.kosaraju();
+  CXXGraph::SCCResult<int> res = graph.kosaraju();
   ASSERT_TRUE(res.success);
   ASSERT_EQ(res.errorMessage, "");
   CXXGraph::Components<int> expectedComponents = {{node1, node2},
                                                   {node3, node4}};
-  compareComponents(res.stronglyConnectedComps, expectedComponents);
+  compareComponents(res, expectedComponents);
 }
 
 TEST(KosarajuTest, test_5) {
@@ -171,7 +163,7 @@ TEST(KosarajuTest, test_5) {
   edgeSet.insert(make_shared<CXXGraph::DirectedEdge<int>>(edge21));
 
   CXXGraph::Graph graph(edgeSet);
-  auto res = graph.kosaraju();
+  CXXGraph::SCCResult<int> res = graph.kosaraju();
   ASSERT_TRUE(res.success);
   ASSERT_EQ(res.errorMessage, "");
 
@@ -182,5 +174,5 @@ TEST(KosarajuTest, test_5) {
       {node8, node9},
       {node10, node11, node12, node13}};
 
-  compareComponents(res.stronglyConnectedComps, expectedComponents);
+  compareComponents(res, expectedComponents);
 }

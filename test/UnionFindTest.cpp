@@ -1,14 +1,14 @@
-#include "CXXGraph.hpp"
+#include "CXXGraph/CXXGraph.hpp"
 #include "gtest/gtest.h"
 
 // Smart pointers alias
 template <typename T>
 using unique = std::unique_ptr<T>;
 template <typename T>
-using shared= std::shared_ptr<T>;
+using shared = std::shared_ptr<T>;
 
-using std::make_unique;
 using std::make_shared;
+using std::make_unique;
 
 TEST(UnionFindTest, setFindTest1) {
   CXXGraph::Node<int> node0("0", 0);
@@ -33,7 +33,7 @@ TEST(UnionFindTest, setFindTest1) {
   CXXGraph::Graph<int> graph(edgeSet);
 
   // every element is a subset of itself
-  std::unordered_map<unsigned long long, CXXGraph::Subset> subset;
+  std::unordered_map<CXXGraph::id_t, CXXGraph::Subset> subset;
   // {{0, 0}, {1, 0}, {2, 0}, {3, 0}};
   CXXGraph::Subset set1{0, 0}, set2{1, 0}, set3{2, 0}, set4{3, 0};
   subset = {{0, set1}, {1, set2}, {2, set3}, {3, set4}};
@@ -53,7 +53,7 @@ TEST(UnionFindTest, setFindTest2) {
   CXXGraph::Node<int> node3("3", 3);
   // element 2 & 4 are subset of 0
   // element 4 is subset of 1
-  std::unordered_map<unsigned long long, CXXGraph::Subset> subset;
+  std::unordered_map<CXXGraph::id_t, CXXGraph::Subset> subset;
 
   CXXGraph::Subset set1{0, 0}, set2{0, 0}, set3{0, 0}, set4{1, 0};
   subset = {{0, set1}, {1, set2}, {2, set3}, {3, set4}};
@@ -77,7 +77,7 @@ TEST(UnionFindTest, setUnionTest3) {
   CXXGraph::Node<int> node2("2", 2);
   CXXGraph::Node<int> node3("3", 3);
   // union of (node 1 & node3)  should increase node0 rank by 1
-  std::unordered_map<unsigned long long, CXXGraph::Subset> subset;
+  std::unordered_map<CXXGraph::id_t, CXXGraph::Subset> subset;
 
   CXXGraph::Subset set1{0, 0}, set2{0, 0}, set3{0, 0}, set4{1, 0};
   subset = {{0, set1}, {1, set2}, {2, set3}, {3, set4}};

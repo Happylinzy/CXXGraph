@@ -1,5 +1,4 @@
-#include <CXXGraph.hpp>
-
+#include <CXXGraph/CXXGraph.hpp>
 #include <memory>
 
 using std::make_shared;

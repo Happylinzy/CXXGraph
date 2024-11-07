@@ -2,6 +2,9 @@ option(CODE_COVERAGE "Enable coverage reporting" OFF)
 option(CMAKE_USE_WIN32_THREADS_INIT "using WIN32 threads" ON)
 option(gtest_disable_pthreads "Disable uses of pthreads in gtest." ON)
 
+# Force dynamic linking since MSVC now links C runtimes dynamically by default
+set(gtest_force_shared_crt on)
+
 if(CODE_COVERAGE)
 	message( "Code Coverage Enabled" )
 	add_compile_options(
@@ -23,6 +26,10 @@ endif(CODE_COVERAGE)
 option(TEST "Enable Test" OFF)
 if(TEST)
     include(${CPM_DOWNLOAD_LOCATION})
+	add_compile_options(
+	  -Wall
+	  -Wextra
+	)
 
     CPMAddPackage(
         NAME googletest
@@ -38,7 +45,7 @@ if(TEST)
         OPTIONS "CMAKE_POSITION_INDEPENDENT_CODE True"
     )
 
-    file (GLOB TEST_FILES "*.cpp" "*.hpp")
+    file (GLOB TEST_FILES "*.cpp" "*.hpp" "*.h")
     add_executable(test_exe ${TEST_FILES})
 
     target_compile_definitions(test_exe
@@ -79,4 +86,22 @@ if(TEST)
     add_test(test_bestfirstsearch test_exe --gtest_filter=BestFirstSearch*)
     add_test(test_kahn test_exe --gtest_filter=Kahn*)
     add_test(test_DOT test_exe --gtest_filter=DOTTest*)
+
+    add_test(test_bellmanford test_exe --gtest_filter=BellmanFord*)
+    add_test(test_boruvka test_exe --gtest_filter=Boruvka*)
+    add_test(test_bron_kerbosch test_exe --gtest_filter=BronKerbosch*)
+    add_test(test_connectivity test_exe --gtest_filter=Connectivity*)
+    add_test(test_euler_path test_exe --gtest_filter=EulerPath*)
+    add_test(test_fordfulkerson test_exe --gtest_filter=FordFulkerson*)
+    add_test(test_fw test_exe --gtest_filter=FW*)
+    add_test(test_graph_slicing test_exe --gtest_filter=GraphSlicing*)
+    add_test(test_kruskal test_exe --gtest_filter=Kruskal*)
+    add_test(test_mtx test_exe --gtest_filter=MTX*)
+    add_test(test_prim test_exe --gtest_filter=Prim*)
+    add_test(test_tarjan test_exe --gtest_filter=Tarjan*)
+    add_test(test_topological_sort test_exe --gtest_filter=TopologicalSort*)
+    add_test(test_transitive_reductiono test_exe --gtest_filter=TransitiveReduction*)
+    add_test(test_union_find test_exe --gtest_filter=UnionFind*)
+    add_test(test_floyd_warshall test_exe --gtest_filter=FloydWarshall*)
+    add_test(test_welsh_powell_coloring test_exe --gtest_filter=welshPowellColoring*)
 endif(TEST)

@@ -5,8 +5,7 @@
 #include <memory>
 #include <random>
 
-#include "CXXGraph.hpp"
-#include "../include/Utility/PointerHash.hpp"
+#include "CXXGraph/CXXGraph.hpp"
 
 template <typename T>
 using shared = std::shared_ptr<T>;
@@ -22,7 +21,7 @@ static std::map<unsigned long, shared<CXXGraph::Node<int>>> generateRandomNodes(
   unsigned int randSeed = (unsigned int)time(NULL);
   rand.seed(randSeed);
 
-  for (auto index = 0; index < numberOfNodes; index++) {
+  for (unsigned long index = 0; index < numberOfNodes; index++) {
     int randomNumber = (distribution(rand) % MaxValue) + 1;
     auto newNode =
         make_shared<CXXGraph::Node<int>>(std::to_string(index), randomNumber);
@@ -43,7 +42,7 @@ static std::map<unsigned long, shared<CXXGraph::Edge<int>>> generateRandomEdges(
   rand.seed(randSeed);
 
   auto MaxValue = nodes.size();
-  for (auto index = 0; index < numberOfEdges; index++) {
+  for (unsigned long index = 0; index < numberOfEdges; index++) {
     int randomNumber1 = (distribution(rand) % MaxValue);
     int randomNumber2 = (distribution(rand) % MaxValue);
     auto newEdge = make_shared<CXXGraph::Edge<int>>(

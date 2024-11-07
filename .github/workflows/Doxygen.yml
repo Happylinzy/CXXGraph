@@ -22,7 +22,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.PERSONAL_TOKEN }}
       - name: Generate build number
@@ -38,7 +38,7 @@ jobs:
           git push origin documentation-update-${{ steps.buildnumber.outputs.build_number }}
 
       - name: Doxygen Action
-        uses: mattnotmitt/doxygen-action@v1.9.5
+        uses: mattnotmitt/doxygen-action@v1.9.8
         with:
           # Working directory
           working-directory: 'docs/'
@@ -62,7 +62,7 @@ jobs:
           branch: documentation-update-${{ steps.buildnumber.outputs.build_number }}
 
       - name: Create Pull Request
-        uses: thomaseizinger/create-pull-request@1.3.1
+        uses: thomaseizinger/create-pull-request@1.4.0
         with:
           # A GitHub API token
           github_token: ${{ secrets.PERSONAL_TOKEN }}

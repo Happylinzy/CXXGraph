@@ -1,8 +1,8 @@
 #include <benchmark/benchmark.h>
-#include <Edge/DirectedWeightedEdge.hpp>
+
 #include <memory>
 
-#include "CXXGraph.hpp"
+#include "CXXGraph/CXXGraph.hpp"
 #include "Utilities.hpp"
 
 using std::make_shared;

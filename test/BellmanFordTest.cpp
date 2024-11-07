@@ -1,15 +1,16 @@
 #include <memory>
-#include "CXXGraph.hpp"
+
+#include "CXXGraph/CXXGraph.hpp"
 #include "gtest/gtest.h"
 
 // Smart pointers alias
 template <typename T>
 using unique = std::unique_ptr<T>;
 template <typename T>
-using shared= std::shared_ptr<T>;
+using shared = std::shared_ptr<T>;
 
-using std::make_unique;
 using std::make_shared;
+using std::make_unique;
 
 // check if algorithm works using a complicated test case
 TEST(BellmanFordTest, test_1) {
